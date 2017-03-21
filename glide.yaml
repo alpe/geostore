@@ -1,0 +1,18 @@
+package: github.com/alpe/geostore
+import:
+- package: github.com/golang/geo
+  subpackages:
+  - s2
+- package: github.com/golang/protobuf
+  version: c9c7427a2a70d2eb3bafa0ab2dc163e45f143317
+  subpackages:
+  - proto
+- package: github.com/boltdb/bolt
+  version: v1.3.0
+- package: gopkg.in/yaml.v2
+- package: github.com/Sirupsen/logrus
+  version: v0.11.5
+- package: github.com/hashicorp/golang-lru
+- package: github.com/pquerna/ffjson
+  subpackages:
+  - fflib/v1

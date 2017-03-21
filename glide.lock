@@ -1,0 +1,38 @@
+hash: 1debdb8cf65ace57ff716a603a2234da109dd7c5abe105a1794924621516f615
+updated: 2017-03-30T17:46:43.546987485+02:00
+imports:
+- name: github.com/boltdb/bolt
+  version: 583e8937c61f1af6513608ccc75c97b6abdf4ff9
+- name: github.com/golang/geo
+  version: f819552e7195873dbc628554929703291cecbea0
+  subpackages:
+  - r1
+  - r2
+  - r3
+  - s1
+  - s2
+- name: github.com/golang/protobuf
+  version: c9c7427a2a70d2eb3bafa0ab2dc163e45f143317
+  subpackages:
+  - proto
+- name: github.com/hashicorp/golang-lru
+  version: 0a025b7e63adc15a622f29b0b2c4c3848243bbf6
+  subpackages:
+  - simplelru
+- name: github.com/kpawlik/geojson
+  version: 98b60f908b4d322e71116b58c932bc7a6d379da5
+- name: github.com/pquerna/ffjson
+  version: f60b597ded7e7542b36fe20999dfd48166abd5ae
+  subpackages:
+  - ffjson
+  - fflib/v1
+  - fflib/v1/internal
+- name: github.com/Sirupsen/logrus
+  version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
+- name: golang.org/x/sys
+  version: 30de6d19a3bd89a5f38ae4028e23aaa5582648af
+  subpackages:
+  - unix
+- name: gopkg.in/yaml.v2
+  version: 31c299268d302dd0aa9a0dcf765a3d58971ac83f
+testImports: []

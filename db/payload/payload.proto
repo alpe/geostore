@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package payload;
+
+// Rooms is the collection of rooms in a cell
+message Rooms {
+    uint64 cellID = 1;
+    map<uint64, Room> rooms = 2;
+    map<string, string> metadata = 3;
+}
+
+// Room represent a single POI with coordinates lat & lng
+message Room {
+    uint64 id = 1;
+    double lat = 2;
+    double lng = 3;
+    map<string, string> metadata = 4;
+    string address = 5;
+    string currency = 6;
+}
+

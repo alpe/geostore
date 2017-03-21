@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
+</head>
+<script>
+    var map;
+    var markers = [];
+    var infoWindow;
+
+    function initMap(){
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 15,
+            center: new google.maps.LatLng({{.centerLat}},{{.centerLng}}),
+        mapTypeId: 'terrain'
+    });
+        var radius = $('#radius').val();
+        var center = map.getCenter();
+        map.data.loadGeoJson('/cells?lat=' + center.lat() + '&lng=' + center.lng() + '&radius=' + radius+'&limit=9');
+        google.maps.event.addListener(map, 'idle', function () {
+            if (!this.get('dragging') && this.get('oldCenter') && this.get('oldCenter') !== this.getCenter()) {
+                //do what you want to
+                clearMarkers();
+                loadMakers(this.getCenter())
+            }
+            if (!this.get('dragging')) {
+                this.set('oldCenter', this.getCenter())
+            }
+
+        });
+
+        google.maps.event.addListener(map, 'dragstart', function () {
+            this.set('dragging', true);
+        });
+
+        google.maps.event.addListener(map, 'dragend', function () {
+            this.set('dragging', false);
+            google.maps.event.trigger(this, 'idle', {});
+        });
+        map.data.setStyle({
+            zIndex:100,
+            clickable: false,
+            fillOpacity:0.01,
+            fillColor: 'blue',
+            strokeWeight: 1
+        });
+
+        infoWindow = new google.maps.InfoWindow;
+        loadMakers(center)
+
+        $.each(['#radius','#limit'],function(i, f){
+            $(f).change(function(){
+                clearMarkers();
+                loadMakers(map.getCenter())
+            })
+        })
+    }
+
+    function loadMakers(center) {
+        console.log("refresh markers");
+        var centerMarker = new google.maps.Marker({
+            map: map,
+            position: center,
+            icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+            label: "center"
+        });
+        markers.push(centerMarker);
+
+//        $.getJSON('/rooms?urLat=' + bounds.getNorthEast().lat() + '&urLng=' + bounds.getNorthEast().lng() +
+//            '&blLat=' + bounds.getSouthWest().lat() + '&blLng=' + bounds.getSouthWest().lng(),
+
+        var radius = $('#radius').val();
+        var limit = $('#limit').val();
+        var start_time = new Date().getTime();
+        var reqUrl = '/rooms?lat=' + center.lat() + '&lng=' + center.lng() + '&radius=' + radius + '&limit='+limit
+        var x = $.getJSON(reqUrl, function (resp) {
+            $.each(resp.data, function (i, entry) {
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: new google.maps.LatLng(
+                        parseFloat(entry.Room.Lat),
+                        parseFloat(entry.Room.Lng)
+                    ),
+//                    label: "alex"
+                });
+                markers.push(marker);
+                var infowincontent = document.createElement('div');
+                var strong = document.createElement('strong');
+                strong.textContent = entry.Room.Address;
+                infowincontent.appendChild(strong);
+                infowincontent.appendChild(document.createElement('br'));
+                marker.addListener('click', function () {
+                    infoWindow.setContent(infowincontent);
+                    infoWindow.open(map, marker);
+                });
+            });
+            $('#count').text(markers.length -1);
+        })
+    }
+
+    function clearMarkers() {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+        markers = [];
+    }
+</script>
+<body>
+<form>
+    <input id="radius" type="text" value="15000" >
+    <input id="limit" type="text" value="200">
+</form>
+<div id="map" style="width: 1024px;height: 768px;"></div>
+<p>
+<div></div>
+    <span>Rooms: <span id="count">0</span></span>
+</div>
+</p>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key={{.googleMapsApiKey}}&callback=initMap">
+</script>
+</body>
+</html>
